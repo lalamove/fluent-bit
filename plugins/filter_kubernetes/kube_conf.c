@@ -50,6 +50,7 @@ struct flb_kube *flb_kube_conf_create(struct flb_filter_instance *i,
     }
     ctx->config = config;
     ctx->merge_json_log = FLB_FALSE;
+    ctx->include_annotations = FLB_TRUE;
     ctx->dummy_meta = FLB_FALSE;
     ctx->tls_debug = -1;
     ctx->tls_verify = FLB_TRUE;
@@ -173,6 +174,12 @@ struct flb_kube *flb_kube_conf_create(struct flb_filter_instance *i,
     if (!ctx->hash_table) {
         flb_kube_conf_destroy(ctx);
         return NULL;
+    }
+
+    /* Include Kubernetes Annotations */
+    tmp = flb_filter_get_property("include_annotations", i);
+    if (tmp) {
+        ctx->include_annotations = flb_utils_bool(tmp);
     }
 
     /* Use Systemd Journal */
