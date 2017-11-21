@@ -244,7 +244,7 @@ static void cb_results(unsigned char *name, unsigned char *value,
     return;
 }
 
-static int merge_meta(struct flb_kube_meta *meta,
+static int merge_meta(struct flb_kube_meta *meta, struct flb_kube *ctx,
                       char *api_buf, size_t api_size,
                       char **out_buf, size_t *out_size)
 {
@@ -413,7 +413,7 @@ static int merge_meta(struct flb_kube_meta *meta,
         msgpack_pack_object(&mp_pck, v);
     }
 
-    if (have_annotations >= 0) {
+    if (have_annotations >= 0 && ctx->include_annotations == FLB_TRUE) {
         k = meta_val.via.map.ptr[have_annotations].key;
         v = meta_val.via.map.ptr[have_annotations].val;
 
@@ -560,7 +560,7 @@ static int get_and_merge_meta(struct flb_kube *ctx, struct flb_kube_meta *meta,
         return -1;
     }
 
-    ret = merge_meta(meta,
+    ret = merge_meta(meta, ctx,
                      api_buf, api_size,
                      &merge_buf, &merge_size);
     flb_free(api_buf);
