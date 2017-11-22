@@ -360,7 +360,9 @@ static int merge_meta(struct flb_kube_meta *meta, struct flb_kube *ctx,
 
         else if (size == 11 && strncmp(ptr, "annotations", 11) == 0) {
             have_annotations = i;
-            map_size++;
+            if (ctx->include_annotations == FLB_TRUE) {
+                map_size++;
+            }
         }
 
         if (have_uid >= 0 && have_labels >= 0 && have_annotations >= 0) {
